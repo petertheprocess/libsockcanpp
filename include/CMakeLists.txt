@@ -11,6 +11,9 @@ target_sources(${PROJECT_NAME}
         exceptions/CanException.hpp
         exceptions/CanInitException.hpp
         exceptions/InvalidSocketException.hpp
+        can_errors/CanControllerError.hpp
+        can_errors/CanProtocolError.hpp
+        can_errors/CanTransceiverError.hpp
 )
 
 if (TARGET sockcanpp_test)
@@ -25,5 +28,8 @@ if (TARGET sockcanpp_test)
             exceptions/CanException.hpp
             exceptions/CanInitException.hpp
             exceptions/InvalidSocketException.hpp
+            can_errors/CanControllerError.hpp
+            can_errors/CanProtocolError.hpp
+            can_errors/CanTransceiverError.hpp
     )
 endif()
