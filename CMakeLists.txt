@@ -58,7 +58,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 install(EXPORT ${PROJECT_NAME}Targets
-    FILE ${PROJECT_NAME}Targets.cmake
+    FILE "lib${PROJECT_NAME}Targets.cmake"
     NAMESPACE ${PROJECT_NAME}::
     DESTINATION lib/cmake/${PROJECT_NAME}
 )
