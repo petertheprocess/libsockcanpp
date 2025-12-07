@@ -12,7 +12,6 @@
 
 #include <CanMessage.hpp>
 
-// Import the macro from CanMessage.hpp for consistency
 using sockcanpp::CanMessage;
 
 using std::string;
