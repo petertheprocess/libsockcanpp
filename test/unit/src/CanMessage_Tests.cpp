@@ -21,7 +21,7 @@ TEST(CanMessageTests, CanMessage_Constructor_ExpectDefaultValues) {
 
     ASSERT_EQ(msg.getCanId(), 0);
     ASSERT_EQ(msg.getFrameData(), "");
-    ASSERT_TRUE(msg.getRawFrame().can_id == 0 && msg.getRawFrame().can_dlc == 0);
+    ASSERT_TRUE(msg.getRawFrame().can_id == 0 && msg.getRawFrame().CAN_FRAME_LEN_FIELD == 0);
 }
 
 TEST(CanMessageTests, CanMessage_ConstructorWithId_ExpectCorrectId) {
@@ -29,7 +29,7 @@ TEST(CanMessageTests, CanMessage_ConstructorWithId_ExpectCorrectId) {
 
     ASSERT_EQ(msg.getCanId(), 0x123);
     ASSERT_EQ(msg.getFrameData(), "");
-    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().can_dlc == 0);
+    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().CAN_FRAME_LEN_FIELD == 0);
 }
 
 TEST(CanMessageTests, CanMessage_ConstructorWithId_ExpectCorrectIdAndTestData) {
@@ -37,7 +37,7 @@ TEST(CanMessageTests, CanMessage_ConstructorWithId_ExpectCorrectIdAndTestData) {
 
     ASSERT_EQ(msg.getCanId(), 0x123);
     ASSERT_EQ(msg.getFrameData(), "TestData");
-    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().can_dlc == 8);
+    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().CAN_FRAME_LEN_FIELD == 8);
 }
 
 TEST(CanMessageTests, CanMessage_ConstructorWithIdAndTimestamp_ExpectCorrectValues) {
@@ -46,7 +46,7 @@ TEST(CanMessageTests, CanMessage_ConstructorWithIdAndTimestamp_ExpectCorrectValu
 
     ASSERT_EQ(msg.getCanId(), 0x123);
     ASSERT_EQ(msg.getFrameData(), "TestData");
-    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().can_dlc == 8);
+    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().CAN_FRAME_LEN_FIELD == 8);
     ASSERT_EQ(msg.getTimestampOffset(), timestamp);
 }
 
@@ -56,6 +56,6 @@ TEST(CanMessageTests, CanMessage_ConstructorWithIdAndSpan_ExpectCorrectValues) {
 
     ASSERT_EQ(msg.getCanId(), 0x123);
     ASSERT_EQ(msg.getFrameData(), "TestData");
-    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().can_dlc == 8);
+    ASSERT_TRUE(msg.getRawFrame().can_id == 0x123 && msg.getRawFrame().CAN_FRAME_LEN_FIELD == 8);
 }
 #endif // __cpp_lib_span >= 202002L

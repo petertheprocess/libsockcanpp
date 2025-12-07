@@ -6,6 +6,7 @@
 # Build directories
 ###
 build*/
+_codeql_*/
 
 ###
 # Documentation (Doxygen)
