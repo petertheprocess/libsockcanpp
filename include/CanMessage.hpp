@@ -27,6 +27,7 @@
 //      SYSTEM INCLUDES     //
 //////////////////////////////
 #include <linux/can.h>
+#include <linux/version.h>
 
 #include <bit>
 #include <cstring>
@@ -47,6 +48,14 @@
 #include "can_errors/CanTransceiverError.hpp"
 
 namespace sockcanpp {
+
+    // Kernel 5.11+ uses 'len' field, older kernels use 'can_dlc' (deprecated)
+    // KERNEL_VERSION(5, 11, 0) = (5 << 16) + (11 << 8) + 0 = 330496
+    #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
+    #   define CAN_FRAME_LEN_FIELD len
+    #else
+    #   define CAN_FRAME_LEN_FIELD can_dlc
+    #endif // LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
 
     #if __cpp_lib_bit_cast >= 201806L
     #   define type_cast std::bit_cast
@@ -96,7 +105,7 @@ namespace sockcanpp {
 
                 m_rawFrame.can_id = canId;
                 std::copy(frameData.begin(), frameData.end(), m_rawFrame.data);
-                m_rawFrame.can_dlc = frameData.size();
+                m_rawFrame.CAN_FRAME_LEN_FIELD = frameData.size();
             }
 
             explicit            CanMessageT(const CanId& canId, const string& frameData, const Duration& timestampOffset): CanMessageT(canId, frameData) {
@@ -117,7 +126,7 @@ namespace sockcanpp {
 
                 m_rawFrame.can_id = canId;
                 std::copy(frameData.begin(), frameData.end(), m_rawFrame.data);
-                m_rawFrame.len = frameData.size();
+                m_rawFrame.CAN_FRAME_LEN_FIELD = frameData.size();
             }
 
             explicit            CanMessageT(const CanId& canId, const std::span<const uint8_t>& frameData, const Duration& timestampOffset): CanMessageT(canId, frameData) {
@@ -137,15 +146,15 @@ namespace sockcanpp {
 
             const string        getFrameData()  const noexcept {
                 string data{};
-                data.reserve(m_rawFrame.len);
-                std::copy(std::begin(m_rawFrame.data), std::begin(m_rawFrame.data) + m_rawFrame.can_dlc, std::back_inserter(data));
+                data.reserve(m_rawFrame.CAN_FRAME_LEN_FIELD);
+                std::copy(std::begin(m_rawFrame.data), std::begin(m_rawFrame.data) + m_rawFrame.CAN_FRAME_LEN_FIELD, std::back_inserter(data));
 
                 return data;
             } //!< Returns the frame data as a string.
 
             friend std::ostream& operator<<(std::ostream& os, const CanMessageT& msg) {
                 os << "CanMessage(canId: " << msg.getCanId() << ", data: ";
-                for (size_t i = 0; i < msg.m_rawFrame.can_dlc; ++i) {
+                for (size_t i = 0; i < msg.m_rawFrame.CAN_FRAME_LEN_FIELD; ++i) {
                     os << std::hex << static_cast<int>(msg.m_rawFrame.data[i]) << " ";
                 }
                 os << ", timestampOffset: " << msg.m_timestampOffset.count() << "ms)";
@@ -187,10 +196,10 @@ namespace sockcanpp {
         public: // +++ Equality Checks +++
             bool                operator==(const CanMessageT& other) const noexcept {
                 return  m_canIdentifier == other.m_canIdentifier &&
-                        m_rawFrame.can_dlc == other.m_rawFrame.can_dlc &&
+                        m_rawFrame.CAN_FRAME_LEN_FIELD == other.m_rawFrame.CAN_FRAME_LEN_FIELD &&
                         std::equal(
-                            std::begin(m_rawFrame.data), std::begin(m_rawFrame.data) + m_rawFrame.can_dlc,
-                            std::begin(other.m_rawFrame.data), std::begin(other.m_rawFrame.data) + other.m_rawFrame.can_dlc
+                            std::begin(m_rawFrame.data), std::begin(m_rawFrame.data) + m_rawFrame.CAN_FRAME_LEN_FIELD,
+                            std::begin(other.m_rawFrame.data), std::begin(other.m_rawFrame.data) + other.m_rawFrame.CAN_FRAME_LEN_FIELD
                         );
             } //!< Compares this CAN message to another for equality.
 
